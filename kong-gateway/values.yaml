@@ -1,0 +1,45 @@
+replicaCount: 3
+
+image:
+  repository: kong
+  tag: "3.6"
+
+env:
+  database: "off"
+  log_level: info
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+proxy:
+  enabled: true
+  #type: LoadBalancer
+  type: NodePort
+  http:
+    enabled: true
+    servicePort: 80
+    nodePort: 1234 # add node port here
+  tls:
+    enabled: true
+    servicePort: 443
+    nodePort: 1234 # add node port here 
+  # loadBalancer:
+  #   replicas: 1
+
+admin:
+  enabled: false
+
+ingressController:
+  enabled: true
+  installCRDs: true
+  env:
+    kong_admin_tls_skip_verify: true
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
